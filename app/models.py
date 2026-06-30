@@ -23,3 +23,9 @@ class User(Base):
     password = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), server_default='now()', nullable=False)
     posts=relationship("Post", back_populates="owner")
+
+class Vote(Base):
+    __tablename__ = "votes"
+
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    post_id = Column(Integer, ForeignKey("posts.id", ondelete="CASCADE"), primary_key=True)
