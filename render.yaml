@@ -1,0 +1,43 @@
+databases:
+  - name: fastapi-db
+    databaseName: fastapi
+    user: fastapi
+    plan: free
+    region: oregon
+
+services:
+  - type: web
+    name: fastapi-course
+    runtime: python
+    plan: free
+    region: oregon
+    branch: main
+    buildCommand: "pip install -r requirements.txt && alembic upgrade head"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: DATABASE_HOSTNAME
+        fromDatabase:
+          name: fastapi-db
+          property: host
+      - key: DATABASE_PORT
+        fromDatabase:
+          name: fastapi-db
+          property: port
+      - key: DATABASE_NAME
+        fromDatabase:
+          name: fastapi-db
+          property: database
+      - key: DATABASE_USERNAME
+        fromDatabase:
+          name: fastapi-db
+          property: user
+      - key: DATABASE_PASSWORD
+        fromDatabase:
+          name: fastapi-db
+          property: password
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "30"
